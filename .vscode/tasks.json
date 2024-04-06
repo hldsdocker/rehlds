@@ -1,0 +1,46 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build HLDS Image",
+            "type": "docker-build",
+            "dockerBuild": {
+                "context": "${workspaceFolder}",
+                "buildArgs": {
+                    "MOD": "${input:mod}"
+                },
+                "tag": "rehlds_image:${input:mod}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "Run HLDS container",
+            "command": "docker run --rm -ti -p 26900-27020:26900-27020/udp rehlds_image:${input:mod}",
+            "dependsOn": [
+                "Build HLDS Image"
+            ]
+        }
+    ],
+    "inputs": [
+        {
+            "type": "pickString",
+            "id": "mod",
+            "default": "valve",
+            "description": "Select mod.",
+            "options": [
+                "valve",
+                "cstrike",
+                "czero",
+                "dod",
+                "gearbox",
+                "tfc",
+                "ricochet",
+                "dmc"
+            ]
+        }
+    ]
+}
