@@ -18,26 +18,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        mod:
-          - valve
-          - cstrike
-          - czero
-          # - dod
-          # - gearbox
-          # - tfc
-          # - ricochet
-          # - dmc
-        tagName:
-          - legacy
-          - regamedll
-          - bugfixedhl
-        exclude:
-          - mod: valve
-            tagName: regamedll
-          - mod: [ cstrike, czero ]
-            tagName: bugfixedhl
+        mod: [
+          { slug: valve,      tagName: legacy },
+          { slug: valve,      tagName: bugfixedhl },
 
+          { slug: cstrike,    tagName: legacy },
+          { slug: cstrike,    tagName: regamedll },
 
+          { slug: czero,      tagName: legacy },
+          { slug: czero,      tagName: regamedll },
+
+          { slug: dod,        tagName: legacy },
+          { slug: gearbox,    tagName: legacy },
+          { slug: tfc,        tagName: legacy },
+          { slug: ricochet,   tagName: legacy },
+          { slug: dmc,        tagName: legacy },
+        ]
     env:
       needToPush: ${{ github.ref == 'refs/heads/master' }}
 
@@ -62,12 +58,12 @@ jobs:
         platforms: linux/amd64
         push: false
         tags: |
-          ${{ vars.DOCKER_USERNAME }}/rehlds-${{ matrix.mod }}:${{ matrix.tagName }}
-        # ${{ matrix.tagName == 'legacy' && format('{0}/rehlds-{1}:latest', vars.DOCKER_USERNAME, matrix.mod) || null}}
+          ${{ vars.DOCKER_USERNAME }}/rehlds-${{ matrix.mod.slug }}:${{ matrix.mod.tagName }}
+          ${{ matrix.mod.tagName == 'legacy' && format('{0}/rehlds-{1}:latest', vars.DOCKER_USERNAME, matrix.mod.slug) || null}}
         build-args: |
-          MOD=${{ matrix.mod }}
+          MOD=${{ matrix.mod.slug }}
           ReHLDS_VERSION=${{ env.rehldsVersion }}
-          ${{ matrix.tagName != 'legacy' && 'ReGameDLL_VERSION=latest' || '' }}
-          ${{ matrix.tagName == 'legacy' && 'BugfixedHL_LINK=' || ''}}
-        cache-from: type=gha,scope=build-${{ matrix.mod }}-${{ matrix.tagName }}
-        cache-to: type=gha,mode=max,scope=build-${{ matrix.mod }}-${{ matrix.tagName }}
+          ${{ matrix.mod.tagName != 'legacy' && 'ReGameDLL_VERSION=latest' || '' }}
+          ${{ matrix.mod.tagName == 'legacy' && 'BugfixedHL_LINK=' || ''}}
+        cache-from: type=gha,scope=build-${{ matrix.mod.slug }}-${{ matrix.mod.tagName }}
+        cache-to: type=gha,mode=max,scope=build-${{ matrix.mod.slug }}-${{ matrix.mod.tagName }}
