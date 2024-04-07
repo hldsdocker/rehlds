@@ -22,7 +22,7 @@ jobs:
           - valve
           - cstrike
           - czero
-          - dod
+          # - dod
           # - gearbox
           # - tfc
           # - ricochet
@@ -34,12 +34,9 @@ jobs:
         exclude:
           - mod: valve
             tagName: regamedll
-          - mod: cstrike
+          - mod: [ cstrike, czero ]
             tagName: bugfixedhl
-          - mod: czero
-            tagName: bugfixedhl
-          - mod: dod
-            tagName: [ bugfixedhl, regamedll ]
+
 
     env:
       needToPush: ${{ github.ref == 'refs/heads/master' }}
