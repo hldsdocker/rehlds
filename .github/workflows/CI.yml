@@ -23,10 +23,10 @@ jobs:
           - cstrike
           - czero
           - dod
-          - gearbox
-          - tfc
-          - ricochet
-          - dmc
+          # - gearbox
+          # - tfc
+          # - ricochet
+          # - dmc
         tagName:
           - legacy
           - regamedll
