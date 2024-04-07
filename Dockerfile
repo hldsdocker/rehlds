@@ -37,7 +37,7 @@ SHELL [ "/bin/bash", "-c" ]
 ARG MOD
 
 # Install BugfixedHL-Rebased
-RUN if [ "${MOD}" = "valve" ] && [ "${BugfixedHL_LINK}" -n "" ]; then \
+RUN if [ "${MOD}" = "valve" ] && [ "${#BugfixedHL_LINK}" -gt 0 ]; then \
         releaseLink=${BugfixedHL_LINK} \
         && curl -sSL $releaseLink | bsdtar -xf - -C ${MOD}/ --strip-components=2 --exclude='*.dll' --exclude='*.pdb' BugfixedHL*server/valve_addon/dlls/*; \
     fi
