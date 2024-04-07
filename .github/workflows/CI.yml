@@ -63,9 +63,11 @@ jobs:
         push: false
         tags: |
           ${{ vars.DOCKER_USERNAME }}/rehlds-${{ matrix.mod }}:${{ matrix.tagName }}
-        # ${{ matrix.rehldsVersion == 'legacy' && format('{0}/rehlds-{1}:latest', vars.DOCKER_USERNAME, matrix.mod) || null}}
+        # ${{ matrix.tagName == 'legacy' && format('{0}/rehlds-{1}:latest', vars.DOCKER_USERNAME, matrix.mod) || null}}
         build-args: |
-          ReHLDS_VERSION=${{ env.rehldsVersion }}
           MOD=${{ matrix.mod }}
+          ReHLDS_VERSION=${{ env.rehldsVersion }}
+          ${{ matrix.tagName != 'legacy' && 'ReGameDLL_VERSION=latest' || '' }}
+          ${{ matrix.tagName == 'legacy' && 'BugfixedHL_LINK=' }}
         cache-from: type=gha,scope=build-${{ matrix.mod }}-${{ matrix.mod }}
         cache-to: type=gha,mode=max,scope=build-${{ matrix.mod }}-${{ matrix.mod }}
