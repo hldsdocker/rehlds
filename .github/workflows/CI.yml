@@ -35,17 +35,14 @@ jobs:
           { slug: dmc,        tagName: legacy },
         ]
     env:
-      needToPush: ${{ github.ref_name == github.event.repository.default_branch }}
+      isMasterBranch: ${{ github.ref_name == github.event.repository.default_branch }}
 
     steps:
-    - name: test env
-      run: echo "github.ref_name:${{github.ref_name}}, github.event.repository.default_branch:${{github.event.repository.default_branch}}"
-
     - uses: actions/checkout@v4.1.1
     - uses: docker/setup-buildx-action@v3.2.0
     
     - name: Log in to Docker Hub
-      if: ${{ env.needToPush }}
+      if: ${{ env.isMasterBranch }}
       uses: docker/login-action@v3.1.0
       with:
         username: ${{ vars.DOCKER_USERNAME }}
@@ -55,18 +52,20 @@ jobs:
       uses: docker/build-push-action@v5.3.0
       env:
         rehldsVersion: latest
+        modName: ${{ matrix.mod.slug }}
+        tag: ${{ matrix.mod.tagName }}
       with:
         context: .
         file: ./Dockerfile
         platforms: linux/amd64
-        push: ${{ env.needToPush }}
+        push: ${{ env.isMasterBranch }}
         tags: |
-          ${{ vars.DOCKER_USERNAME }}/rehlds-${{ matrix.mod.slug }}:${{ matrix.mod.tagName }}
-          ${{ matrix.mod.tagName == 'legacy' && format('{0}/rehlds-{1}:latest', vars.DOCKER_USERNAME, matrix.mod.slug) || null}}
+          ${{ vars.DOCKER_USERNAME }}/rehlds-${{ env.modName }}:${{ env.tag }}
+          ${{ env.tag == 'legacy' && format('{0}/rehlds-{1}:latest', vars.DOCKER_USERNAME, env.modName) || null}}
         build-args: |
-          MOD=${{ matrix.mod.slug }}
+          MOD=${{ env.modName }}
           ReHLDS_VERSION=${{ env.rehldsVersion }}
-          ${{ matrix.mod.tagName != 'legacy' && 'ReGameDLL_VERSION=latest' || '' }}
-          ${{ matrix.mod.tagName == 'legacy' && 'BugfixedHL_LINK=' || ''}}
-        cache-from: type=gha,scope=build-${{ matrix.mod.slug }}-${{ matrix.mod.tagName }}
-        cache-to: type=gha,mode=max,scope=build-${{ matrix.mod.slug }}-${{ matrix.mod.tagName }}
+          ${{ env.tag != 'legacy' && 'ReGameDLL_VERSION=latest' || '' }}
+          ${{ env.tag == 'legacy' && 'BugfixedHL_LINK=' || ''}}
+        cache-from: type=gha,scope=build-${{ env.modName }}-${{ env.tag }}
+        cache-to: type=gha,mode=max,scope=build-${{ env.modName }}-${{ env.tag }}
