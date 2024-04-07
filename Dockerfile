@@ -60,5 +60,5 @@ ARG BugfixedHL_LINK
 
 # Hotfix for server startup on BugfixedHL-Rebased
 RUN if [ "${MOD}" = "valve" ] && [ "${#BugfixedHL_LINK}" -gt 0 ]; then \
-        && rm -rf libstdc++.so.6 libgcc_s.so.1 ; \
+        rm -rf libstdc++.so.6 libgcc_s.so.1 ; \
     fi
