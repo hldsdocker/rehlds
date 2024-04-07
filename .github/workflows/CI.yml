@@ -35,12 +35,15 @@ jobs:
           { slug: dmc,        tagName: legacy },
         ]
     env:
-      needToPush: ${{ github.ref == 'refs/heads/master' }}
+      needToPush: ${{ github.ref_name == github.event.repository.default_branch }}
 
     steps:
+    - name: test env
+      run: echo "github.ref_name:${{github.ref_name}}, github.event.repository.default_branch:${{github.event.repository.default_branch}}"
+
     - uses: actions/checkout@v4.1.1
     - uses: docker/setup-buildx-action@v3.2.0
-
+    
     - name: Log in to Docker Hub
       if: ${{ env.needToPush }}
       uses: docker/login-action@v3.1.0
@@ -56,7 +59,7 @@ jobs:
         context: .
         file: ./Dockerfile
         platforms: linux/amd64
-        push: false
+        push: ${{ env.needToPush }}
         tags: |
           ${{ vars.DOCKER_USERNAME }}/rehlds-${{ matrix.mod.slug }}:${{ matrix.mod.tagName }}
           ${{ matrix.mod.tagName == 'legacy' && format('{0}/rehlds-{1}:latest', vars.DOCKER_USERNAME, matrix.mod.slug) || null}}
