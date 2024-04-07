@@ -21,6 +21,16 @@ jobs:
         mod:
           - valve
           - cstrike
+        tagName:
+          - legacy
+          - regamedll
+          - bugfixedhl
+        exclude:
+          - mod: valve
+            tagName: regamedll
+          - mod: cstrike
+            tagName: bugfixedhl
+
           # - czero
           # - dod
           # - gearbox
@@ -52,8 +62,8 @@ jobs:
         platforms: linux/amd64
         push: false
         tags: |
-          ${{ vars.DOCKER_USERNAME }}/rehlds-${{ matrix.mod }}
-        # ${{ matrix.rehldsVersion == 'legacy' && format('{0}/{1}:latest', vars.DOCKER_USERNAME, matrix.mod) || null}}
+          ${{ vars.DOCKER_USERNAME }}/rehlds-${{ matrix.mod }}:${{ matrix.tagName }}
+        # ${{ matrix.rehldsVersion == 'legacy' && format('{0}/rehlds-{1}:latest', vars.DOCKER_USERNAME, matrix.mod) || null}}
         build-args: |
           ReHLDS_VERSION=${{ env.rehldsVersion }}
           MOD=${{ matrix.mod }}
