@@ -21,6 +21,12 @@ jobs:
         mod:
           - valve
           - cstrike
+          - czero
+          - dod
+          - gearbox
+          - tfc
+          - ricochet
+          - dmc
         tagName:
           - legacy
           - regamedll
@@ -30,13 +36,10 @@ jobs:
             tagName: regamedll
           - mod: cstrike
             tagName: bugfixedhl
-
-          # - czero
-          # - dod
-          # - gearbox
-          # - tfc
-          # - ricochet
-          # - dmc
+          - mod: czero
+            tagName: bugfixedhl
+          - mod: dod
+            tagName: [ bugfixedhl, regamedll ]
 
     env:
       needToPush: ${{ github.ref == 'refs/heads/master' }}
