@@ -69,5 +69,5 @@ jobs:
           ReHLDS_VERSION=${{ env.rehldsVersion }}
           ${{ matrix.tagName != 'legacy' && 'ReGameDLL_VERSION=latest' || '' }}
           ${{ matrix.tagName == 'legacy' && 'BugfixedHL_LINK=' || ''}}
-        cache-from: type=gha,scope=build-${{ matrix.mod }}-${{ matrix.mod }}
-        cache-to: type=gha,mode=max,scope=build-${{ matrix.mod }}-${{ matrix.mod }}
+        cache-from: type=gha,scope=build-${{ matrix.mod }}-${{ matrix.tagName }}
+        cache-to: type=gha,mode=max,scope=build-${{ matrix.mod }}-${{ matrix.tagName }}
