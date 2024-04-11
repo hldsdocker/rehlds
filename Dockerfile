@@ -43,12 +43,15 @@ RUN if [ "${MOD}" = "valve" ] && [ "${#BugfixedHL_LINK}" -gt 0 ]; then \
     fi
 
 ARG ReGameDLL_VERSION
+ARG ReGameDLL_Bots_URL="https://github.com/s1lentq/ReGameDLL_CS/blob/master/regamedll/extra/zBot/bot_profiles.zip?raw=true"
 # Install ReGameDLL_CS
 RUN if [ "${MOD}" = "cstrike" ] || [ "${MOD}" = "czero" ]; then \
         releaseLink=$(GetGithubReleaseUrl "s1lentq/ReGameDLL_CS" ${ReGameDLL_VERSION}) \
         && curl -sSL $releaseLink | bsdtar -xf - --strip-components=2 bin/linux32/*; \
         if [ "${MOD}" = "czero" ]; then \
             mv cstrike czero ; \
+        else \
+            curl -sSL ${ReGameDLL_Bots_URL} | bsdtar -xf - cstrike/ ;\
         fi \
     fi
 
@@ -62,3 +65,6 @@ ARG BugfixedHL_LINK
 RUN if [ "${MOD}" = "valve" ] && [ "${#BugfixedHL_LINK}" -gt 0 ]; then \
         rm -rf libstdc++.so.6 libgcc_s.so.1 ; \
     fi
+
+# Set default command
+CMD ["bash", "-c", "./hlds_run -game ${MOD} $([ '$MOD' = 'cstrike' ] && echo '-bots' || echo '') -bots +ip 0.0.0.0 -port 27016 +map $(grep -oE '^\\s*(\\w+)' ./${MOD}/mapcycle.txt | head -n 1 | xargs)"]
